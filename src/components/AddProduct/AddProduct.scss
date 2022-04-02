@@ -1,0 +1,13 @@
+.add-product {
+	width: 70%;
+	margin: 50px auto;
+	padding: 20px;
+	border: 2px solid #ADAD5C;
+	border-radius: 2px;
+	background-color: #fff;
+	.img-wrapper {
+		img {
+			width: 100%;
+		}
+	}
+}

@@ -1,0 +1,33 @@
+.sales-card {
+  padding: 70px 0;
+  background-color: white;
+  .sales-list {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 50% 50%;
+    gap: 5% 5%;
+    .sales-item {
+      width: 100%;
+      position: relative;
+      img {
+        width: 100%;
+      }
+      button {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 15%;
+        margin: 0 auto;
+        width: 130px;
+        height: 40px;
+        background: #FFFFFF;
+        box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+        letter-spacing: 0.02em;
+        color: #ADAD69;
+      }
+    }
+  }
+}

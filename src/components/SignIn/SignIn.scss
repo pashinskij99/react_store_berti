@@ -1,0 +1,35 @@
+.sign_in {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+  .card {
+    width: 60%;
+    padding: 30px;
+    .form-check-input {
+      &:checked {
+        background-color: #ADAD5C;
+      }
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+    input {
+      border: 2px solid #ADAD5C;
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+    .btn {
+      background-color: #ADAD5C;
+      border: 1px solid #ADAD5C;
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+}
+

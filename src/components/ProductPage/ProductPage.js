@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react'
 import { useParams } from 'react-router-dom'
-import Service from "../../service/service";
-
 import ContentPage from "./ContentPage/ContentPage";
 import InfoPage from "./InfoPage/InfoPage";
+import { database } from '../../firebase/firestore';
 import './ProductPage.scss'
 import arrow from '../../assets/img/svg/arrow.svg'
+import { onValue, ref } from 'firebase/database';
 
 const SampleNextArrow = React.forwardRef((props, ref) => {
     const { className, onClick } = props;
@@ -25,17 +25,16 @@ const ProductPage = () => {
     const sliderRef = useRef(null)
     const arrowNextRef = useRef(null)
 
-    const service = new Service()
-
-    const params = useParams().id
+    const params = {
+        id: useParams().id,
+        category: useParams().category
+    }
 
     useEffect( () => {
-        service.getPhoto(params)
-            .then((res) => {
-                setData(res)
-                const slickThumbRef = sliderRef.current.querySelector('.slick-dots.slick-thumb')
-                slickThumbRef.append(arrowNextRef.current)
-            })
+        const categoryHydi = ref(database, `category/${params.category}/${params.id}`)
+		onValue(categoryHydi, (snapshot) => {
+            setData(snapshot.val())
+		})
     }, [])
 
     const settings = {
@@ -53,8 +52,8 @@ const ProductPage = () => {
 
     return (
         <div className='product-page'>
-            <ContentPage data={data} sliderRef={sliderRef} settings={settings} />
-            <InfoPage />
+            <ContentPage data={data} arrowNextRef={arrowNextRef} sliderRef={sliderRef} settings={settings} />
+            <InfoPage data={data} />
         </div>
     );
 };

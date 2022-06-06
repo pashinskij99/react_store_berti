@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Slider from "react-slick";
 
-const ContentPage = ({ sliderRef, settings, data }) => {
+const ContentPage = ({ sliderRef, arrowNextRef, settings, data }) => {
+    
+    useEffect(() => {
+        try {
+            const slickThumbRef = sliderRef.current.querySelector('.slick-dots.slick-thumb')
+            slickThumbRef.append(arrowNextRef.current)
+        } catch (e) {}
+    })
+
     return (
         <div className="content_page">
                 <div className="present_img">
@@ -14,19 +22,19 @@ const ContentPage = ({ sliderRef, settings, data }) => {
                             customPaging ={(i) => {
                                 return (
                                     <a>
-                                        <img width={50} src={`${data[0].url}`} alt={i + 1}/>
+                                        <img width={50} src={`${data.imageUrl}`} alt={i + 1}/>
                                     </a>
                                 );
                             }}
                         >
                             <div className='slick-slide-item'>
-                                <img src={data[0].url} />
+                                <img src={data.imageUrl} />
                             </div>
                             <div className='slick-slide-item'>
-                                <img src={data[0].url} />
+                                <img src={data.imageUrl} />
                             </div>
                             <div className='slick-slide-item'>
-                                <img src={data[0].url} />
+                                <img src={data.imageUrl} />
                             </div>
                         </Slider>
                     </div>

@@ -13,8 +13,8 @@ const Home = () => {
                 </div>
             </div>
             <SalesCard />
-            <List title='Скидки' />
-            <List title='Новинки' amountCard={12} albumId={4} />
+            <List title='Скидки' category='Куртки' />
+            <List title='Новинки' fullList={true} />
         </Fragment>
     );
 };

@@ -154,6 +154,7 @@
                 }
             }
             .btns-actions {
+                margin: 25px 0;
                 .btn-basket {
                     padding: 18px 32px;
                     font-weight: 600;
@@ -171,6 +172,16 @@
                     background: #FFFFFF;
                     filter: drop-shadow(-1px -1px 4px rgba(0, 0, 0, 0.1)) drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.1));
                 }
+            }
+            .description {
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 20px;
+                letter-spacing: 0.03em;
+                font-feature-settings: 'case' on;
+                -webkit-user-modify: read-write-plaintext-only;
+                color: #6C6B6B;
+                margin-bottom: 30px ;
             }
         }
     }

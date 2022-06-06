@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom'
 import Navbar from "../Navbar/Navbar";
 import Home from "../Home/Home";
@@ -9,8 +9,10 @@ import { UserProfile } from '../UserProfile/UserProfile';
 import ProductPage from "../ProductPage/ProductPage";
 import AddProduct from '../AddProduct/AddProduct';
 import {NewProducts} from "../NewProducts/NewProducts";
+import { Footer } from '../Footer/Footer';
 
 const App = () => {
+
     return (
         <AuthProvider>
             <Navbar />
@@ -19,10 +21,11 @@ const App = () => {
                 <Route path='/signin' element={ <SignIn /> } />
                 <Route path='/signup' element={ <SignUp /> } />
                 <Route path='/user_profile' element={ <UserProfile /> } />
-                <Route path='/product/:id' element={ <ProductPage /> } />
+                <Route path='/product/:category/:id' element={ <ProductPage /> } />
                 <Route path='/admin/add_product' element={ <AddProduct /> } />
                 <Route path='/admin/new_products' element={ <NewProducts /> } />
             </Routes>
+            <Footer />
         </AuthProvider>
     );
 };

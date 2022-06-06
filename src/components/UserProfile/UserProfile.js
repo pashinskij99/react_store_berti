@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card, Button } from 'react-bootstrap'
+import { UserContentPage } from './UserContentPage/UserContentPage'
+import { UserInfoPage } from './UserInfoPage/UserInfoPage'
 import { useAuth } from '../../contexts/AuthContexts'
 import { useNavigate } from 'react-router-dom'
 import undefined_img from '../../assets/img/png/undefined_img.png'
@@ -19,28 +20,14 @@ export const UserProfile = () => {
 		}
 	}
 
-  	return (
-		<div className='user-profile'>
-			<div className='container'>
-				<div className="user_info">
-					<Card style={{ width: '18rem' }}>
-					<Card.Img variant="top" src={ undefined_img } />
-					<Card.Body>
-						<Card.Title>{currentUser && currentUser.email }</Card.Title>
-						<Card.Text>
-						Some quick example text to build on the card title and make up the bulk of
-						the card's content.
-						</Card.Text>
-						{/* <Button variant="primary">Go somewhere</Button> */}
-					</Card.Body>
-					</Card>
-				</div>
-				<nav>
-					<div className="logout_btn">
-						<Button variant='secondary' onClick={handleLogout}>Logout</Button>
-					</div>
-				</nav>
-			</div>
+	return (
+		<div className='user-page'>
+			<UserContentPage 
+				userProfileImg={undefined_img}
+			/>
+			<UserInfoPage 
+				currentUser={currentUser}
+			/>
 		</div>
 	)
 }

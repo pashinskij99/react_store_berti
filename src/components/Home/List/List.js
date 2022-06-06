@@ -1,27 +1,50 @@
 import React, { useEffect, useState } from 'react'
 import { ref, onValue} from 'firebase/database'
 import { database } from '../../../firebase/firestore'
+import { Link } from 'react-router-dom'
 
 import './List.scss'
 
-const List = ({title}) => {
-    const [data, setData] = useState()
+const List = ({ title, fullList = false, category = 'Куртки' }) => {
+    const [data, setData] = useState(null)
 
     useEffect(() => {
+        if(data) setData(null)   
         const dataList = []
+        switch (fullList) {
+            case true :
+                onValue(ref(database, 'category/'), (snapshot) => {
+                    const fullList = snapshot.val()
+                    for(const key in fullList) {
+                        const items = ref(database, `category/${key}`)
+                        onValue(items, (snapshot) => {
+                            const listItems = snapshot.val()
+                            for (const keyOfKey in listItems) {
+                                const items = ref(database, `category/${key}/${keyOfKey}`)
+                                onValue(items, (snapshot) => {
+                                    dataList.push(snapshot.val())
+                                })
+                            }
+                        })
+                    }
+                    setData(dataList)
+                })
+            break;
+            case false :
+                onValue(ref(database, `category/${category}/`), (snapshot) => {
+                    const list = snapshot.val()
+                    for(const key in list) {
+                        const items = ref(database, `category/Куртки/${key}`)
+                        onValue(items, (snapshot) => {
+                            const itemValue = snapshot.val()
+                            dataList.push(itemValue)
+                        }) 
+                    }
+                    setData(dataList)
+                })
+            break;
+        }
 
-		const categoryHydi = ref(database, 'category/Куртки/')
-		onValue(categoryHydi, (snapshot) => {
-			const list = snapshot.val()
-			for(const key in list) {
-				const items = ref(database, `category/Куртки/${key}`)
-				onValue(items, (snapshot) => {
-					const itemValue = snapshot.val()
-					dataList.push(itemValue)
-				}) 
-			}
-			setData(dataList)
-		}) 
     }, [])
 
     return (
@@ -37,7 +60,7 @@ const List = ({title}) => {
 					        for (let key in product.sizes) if(product.sizes[key]) ArrOfTrueSize.push(key)
 
                             return (
-                                <div className='card' key={key}>
+                                <Link to={`/product/${product.category}/${product.id}`} className='card' key={key}>
                                     <div className="card-img">
                                         <img src={product.imageUrl} alt="img"/>
                                     </div>
@@ -55,7 +78,7 @@ const List = ({title}) => {
                                             <span className="before-sale">{product.price} грн</span>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             )
                         })
                     }

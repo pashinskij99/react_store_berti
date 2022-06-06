@@ -18,9 +18,7 @@ const SignIn = () => {
         try {
             await login(emailRef.current.value, passwordRef.current.value)
             history('/user_profile')
-        } catch (e) {
-            console.log(e)
-        }
+        } catch (e) {}
     }
 
     return (

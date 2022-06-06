@@ -1,9 +1,58 @@
-.user-profile {
-  .container {
-    display: flex;
-    justify-content: space-between;
-    .user_info {
+.user-page {
+  display: flex;
+  margin-top: 50px;
+  .user_content_page {
+    width: 50%;
+    .user_profile_img {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      img {
+        width: 400px;
+        min-width: 1px;
+        height: 400px;
+        min-height: 1px;
+      }
+      .user_name {
 
+      }
+    }
+  }
+  .info_page {
+    width: 50%;
+    .info_page_wrapper {
+      width: 100%;
+      .title {
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 29px;
+        letter-spacing: 0.02em;
+        color: #ADAD5C;
+      }
+      .user_name {
+        
+      }
+      hr {
+        background-color: rgba(196, 196, 196, 0.5);
+      }
+      .basket {
+        // flex-direction: column;
+        .btn {
+          background: #ADAD69;
+          border-radius: 0;
+          color: #fff;
+          padding: 10px 25px;
+          font-size: 15px;
+          // display: flex;
+          margin-right: 20px;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+        .btn.like {
+          background: #ff0000;
+        }
+      }
     }
   }
 }

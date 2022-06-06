@@ -1,64 +1,98 @@
 import React, {useEffect, useRef, useState} from 'react'
-import { Form, Card } from "react-bootstrap";
-import { Link } from 'react-router-dom'
-import NavbarSearch from "./NavbarSearch/NavbarSearch";
 import { useAuth } from "../../contexts/AuthContexts";
-import Service from "../../service/service";
-
-import logo_icon from '../../assets/img/svg/logo.svg'
-import heart_icon from '../../assets/img/svg/heart.svg'
-import user_icon from '../../assets/img/svg/user.svg'
-import basket_icon from '../../assets/img/svg/basket.svg'
+import { database } from '../../firebase/firestore';
+import { onValue, ref } from 'firebase/database';
+import { NavbarJSX } from './NavbarJSX';
 
 import './Navbar.scss'
 
 const Navbar = () => {
     const { currentUser } = useAuth()
-    const [sexTabs] = useState(
-        ['Парни', 'Девушки', 'Дети']
-    )
-    const [categoryTabs] = useState(
-        ['Скидки', 'Новинки', 'Одежда', 'Обувь', 'Аксессуары']
-    )
+    
     const [isActive, setIsActive] = useState(false)
     const [data, setData] = useState()
     const [currentData, setCurrentData] = useState()
     const [stylesForSearchCard, setStylesForSearchCard] = useState({display: 'none'})
     const inputSearch = useRef()
-
-    const service = new Service()
+    const navbarRef = useRef()
 
     useEffect(() => {
-        service.getPhotos()
-            .then(res => {
-                setData(res)
-            })
+        const dataList = []
+
+        const categoryHydi = ref(database, 'category/')
+		onValue(categoryHydi, (snapshot) => {
+			const fullList = snapshot.val()
+			for(const key in fullList) {
+				const items = ref(database, `category/${key}`)
+				onValue(items, (snapshot) => {
+					const listItems = snapshot.val()
+					for (const keyOfKey in listItems) {
+						const items = ref(database, `category/${key}/${keyOfKey}`)
+						onValue(items, (snapshot) => {
+                            const item = {
+                                name: snapshot.val().name,
+                                id: snapshot.val().id,
+                                category: snapshot.val().category,
+                                imageUrl: snapshot.val().imageUrl,
+                            }
+							dataList.push(item)
+						})
+					}
+				})
+			}
+			setData(dataList)
+		})
+        onMouseWheel(navbarRef.current)
     }, [])
+
+    const onMouseWheel = (navbarRef) => {
+		window.addEventListener('mousewheel', (element) => {
+			if(window.pageYOffset >= 31) {
+				// navbarRef.style.position = 'fixed'
+				// navbarRef.style.zIndex = '3'
+				// navbarRef.style.width = '100%'
+				// navbarRef.style.top = '0'
+			} else {
+                // navbarRef.style.position = 'static'
+				// navbarRef.style.zIndex = '3'
+				// navbarRef.style.width = '100%'
+            }
+		})
+	}
 
     const onFocus = () => {
         setStylesForSearchCard({display: 'block'})
     }
 
     const onBlur = () => {
-        setStylesForSearchCard({display: 'none'})
+        // setStylesForSearchCard({display: 'none'})
     }
 
     const searchInputOnChange = (event) => {
         const inputValue = event.target.value
         const currentData = data.filter(currentData => {
+            console.log(currentData.name)
             if (inputValue === '') {
-                return currentData.title;
+                return currentData.name;
             }
             else {
-                return currentData.title.toLowerCase().includes(inputValue)
+                return currentData.name.includes(inputValue)
             }
         })
         setCurrentData(currentData)
     }
 
     const onToggleSearch = () => {
-        if(isActive === false) setIsActive(true)
-        else setIsActive(false)
+        const body = document.querySelector('body')
+
+        if(isActive === false) {
+            setIsActive(true)
+            body.style.overflow = 'hidden'
+        }
+        else {
+            setIsActive(false)
+            body.style.overflow = 'auto'
+        }
     }
 
     const handleTabsClick = (event, selector) => {
@@ -72,126 +106,32 @@ const Navbar = () => {
         target.classList.add('active')
     }
 
-    return (
-        <div className='navbar'>
-            <div className="first-nav">
-                <div className="container">
-                    <div className="change-lang">
-                        <button>RU</button>
-                        /
-                        <button>UKR</button>
-                    </div>
-                    <div className="mobile_phones">
-                        <a href="tel:380665584542">+380665584542</a>
-                        <a href="tel:380675564555">+380675564555</a>
-                    </div>
-                </div>
-            </div>
-            <div className="second-nav">
-                <div className="container">
-                    <div className="logo">
-                        <a href="/">
-                            <img src={ logo_icon } alt="logo"/>
-                        </a>
-                    </div>
-                    <nav className="nav">
-                        <ul className='sex' onClick={ (event) => handleTabsClick( event, '.sex' ) }>
-                            {
-                                sexTabs.map((item, i) => {
-                                    return (
-                                        <li key={i}>
-                                            {
-                                                i === 1
-                                                    ? <a className='active' href="#">{item}</a>
-                                                    : <a href="#">{item}</a>
-                                            }
-                                        </li>
-                                    )
-                                })
-                            }
-                        </ul>
-                        <ul className='category' onClick={ (event) => handleTabsClick( event, '.category' ) }>
-                            {
-                                categoryTabs.map((item, i) => {
-                                    return (
-                                        <li key={i}>
-                                            {
-                                                i === 0
-                                                    ? <a className='active' href="#">{item}</a>
-                                                    : <a href="#">{item}</a>
-                                            }
-                                        </li>
-                                    )
-                                })
-                            }
-                        </ul>
-                    </nav>
-                    <div className="nav-icons">
-                        <ul>
-                            <li>
-                                <NavbarSearch onToggleSearch={onToggleSearch} />
-                            </li>
-                            <li>
-                                <a href="/">
-                                    <img src={ heart_icon } alt="heart_icon"/>
-                                </a>
-                            </li>
-                            <li>
-                                {
-                                    currentUser
-                                        ?   <Link to="/user_profile">
-                                                <img src={ user_icon } alt="user_icon"/>
-                                            </Link>
-                                        :   <Link to="/signin">
-                                                <img src={ user_icon } alt="user_icon"/>
-                                            </Link>
-                                }
+    const handleClickHideModal = (event) => {
+        const target = event.target
+        if(target.classList.contains('form-hide')) {
+            const body = document.querySelector('body')
+            setIsActive(false)
+            body.style.overflow = 'auto'
+        }
+    }
 
-                            </li>
-                            <li>
-                                <a href="/">
-                                    <img src={ basket_icon } alt="basket_icon"/>
-                                </a>
-                            </li>
-                        </ul>
-                        {
-                            isActive &&
-                            <Form className='form'>
-                                <Form.Control
-                                    size="sm"
-                                    onBlur={onBlur}
-                                    onFocus={onFocus}
-                                    onChange={searchInputOnChange}
-                                    ref={inputSearch}
-                                    type="text"
-                                    placeholder="Search..."
-                                />
-                                <Card style={stylesForSearchCard}>
-                                    <ul className='search_results'>
-                                        {
-                                            currentData && currentData.map((item, i) => {
-                                                if(i <= 10) {
-                                                    return <Link
-                                                            to='/'
-                                                            className='btn'
-                                                            variant='light'
-                                                            key={i}
-                                                        >
-                                                        {
-                                                            item.title.substring(0, 10)
-                                                        }
-                                                        </Link>
-                                                }
-                                            })
-                                        }
-                                    </ul>
-                                </Card>
-                            </Form>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+    return (
+        <React.Fragment >
+            <NavbarJSX 
+                handleClickHideModal={handleClickHideModal} 
+                handleTabsClick={handleTabsClick}
+                onToggleSearch={onToggleSearch} 
+                searchInputOnChange={searchInputOnChange}  
+                onBlur={onBlur}
+                onFocus={onFocus}
+                stylesForSearchCard={stylesForSearchCard}
+                inputSearch={inputSearch}
+                currentUser={currentUser}
+                currentData={currentData}
+                isActive={isActive}
+                navbarRef={navbarRef}
+            />
+        </React.Fragment>
     );
 };
 

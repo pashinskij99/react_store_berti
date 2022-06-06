@@ -12,11 +12,13 @@ import './AddProduct.scss'
 const writeUserData = (userId, name, price, imageUrl, sizes, descr, category) => {
 	set(
 		storageRef(database, `category/${ category }/` + userId), {
+			id: userId,
 			name,
 			imageUrl,
 			price,
 			sizes,
-			descr
+			descr,
+			category
 		}
 	)
 }
@@ -55,9 +57,6 @@ const AddProduct = () => {
 		const descr = event.target[8].value
 		const category = event.target[9].value
 
-		// console.dir(event.target)
-		console.log(name, price, sizes, descr, category)
-
 		const imagesRef = ref(storage, `images/${file.name}`)
 		
 		const metadata = {
@@ -67,7 +66,6 @@ const AddProduct = () => {
 		uploadBytes(imagesRef, file, metadata)
 			.then((res) => {
 				const refPath = res.ref._location.path_
-				console.log(refPath)
 				getDownloadURL(ref(storage, refPath))
 					.then((url) => {
 						const id = uuidv4()
